@@ -17,15 +17,16 @@ class Weather {
   public windSpeed: number;
   public icon: string;
 
-  constructor(
-    city: string,
-    country: string,
-    date: string,
-    temperature: number,
-    humidity: number,
-    windSpeed: number,
-    icon: string 
-)} // Double check this
+  constructor() {
+    this.city = '';
+    this.country = '';
+    this.date = '';
+    this.temperature = 0;
+    this.humidity = 0;
+    this.windSpeed = 0;
+    this.icon = '';
+  }
+} // Double check this
 
 // TODO: Complete the WeatherService class
 class WeatherService {
@@ -36,11 +37,11 @@ class WeatherService {
 
   // TODO: Create fetchLocationData method
   private async fetchLocationData(query: string) {
-
+    
   }
   // TODO: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates): Coordinates {
-
+    
   }
   // TODO: Create buildGeocodeQuery method
   private buildGeocodeQuery(): string {
@@ -68,7 +69,7 @@ class WeatherService {
   }
   // TODO: Complete getWeatherForCity method
   async getWeatherForCity(city: string) {
-    
+
   }
 }
 
