@@ -17,7 +17,11 @@ router.post('/', (req, res) => {
 // TODO: GET search history
 router.get('/history', async (_, res) => {
   const cities = await HistoryService.getCities();
+  if (!cities) {
+    res.json({ message: 'No cities searched yet' });
+  } else {
   res.json(cities);
+  }
 });
 
 // * BONUS TODO: DELETE city from search history
