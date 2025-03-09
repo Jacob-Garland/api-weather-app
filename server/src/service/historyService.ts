@@ -37,7 +37,9 @@ class HistoryService {
   }
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
   async removeCity(id: string) {
-    
+    const cities = await this.getCities();
+    const newCities: City[] = cities.filter((city: City) => city.id !== id);
+    await this.write(newCities);
   }
 }
 
