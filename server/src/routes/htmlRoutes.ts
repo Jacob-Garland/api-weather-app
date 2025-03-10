@@ -7,7 +7,7 @@ const router = Router();
 
 // D.C DONE? TODO: Define route to serve index.html
 router.get('/', (_req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../../../client/index.html'));
+    res.sendFile(path.join(__dirname, '../../../client/dist/index.html'));
 });
 
 export default router;
