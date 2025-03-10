@@ -4,8 +4,8 @@ dotenv.config();
 
 // TODO: Define an interface for the Coordinates object
 interface Coordinates {
-  lat: number;
-  lon: number;
+  lat: string;
+  lon: string;
 }
 
 // TODO: Define a class for the Weather object
@@ -32,12 +32,11 @@ class Weather {
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
-  private baseURL: string;
+  private baseURL: string = process.env.API_BASE_URL || ''; 
   private apiKey: string;
   private cityName: string;
 
   constructor() {
-    this.baseURL = 'https://api.openweathermap.org/';
     this.apiKey = process.env.API_KEY || '';
     this.cityName = '';
   }
@@ -65,19 +64,17 @@ class WeatherService {
   }
   // TODO: Create buildGeocodeQuery method
   private buildGeocodeQuery(): string {
-    return `${this.baseURL}geo/1.0/direct?q=${this.cityName}&limit=1&appid=${this.apiKey}`
+    return `${this.baseURL}geo/1.0/direct?q=${this.cityName}&limit=1&appid=${this.apiKey}`;
   }
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
-    const { lat, lon } = coordinates;
-    return `${this.baseURL}data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${this.apiKey}`
+    return `${this.baseURL}weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=imperial&appid=${this.apiKey}`;
   }
   // TODO: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData() {
     const query = this.buildGeocodeQuery();
     const locationData = await this.fetchLocationData(query);
-    const coordinates = this.destructureLocationData(locationData);
-    return coordinates;
+    return this.destructureLocationData(locationData);
   }
   // TODO: Create fetchWeatherData method
   private async fetchWeatherData(coordinates: Coordinates) {
@@ -121,7 +118,7 @@ class WeatherService {
       const currentWeather = this.parseCurrentWeather(weatherData);
 
       // Fetch 7-day Forecast (Requires `onecall` API)
-      const forecastQuery = `${this.baseURL}data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=current,minutely,hourly,alerts&units=metric&appid=${this.apiKey}`;
+      const forecastQuery = `${this.baseURL}onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=current,minutely,hourly,alerts&units=metric&appid=${this.apiKey}`;
       const forecastData = await this.fetchLocationData(forecastQuery);
       
       // Call buildForecastArray
