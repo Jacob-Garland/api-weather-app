@@ -1,6 +1,8 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
+const __dirname = path.resolve();
+
 // TODO: Define a City class with name and id properties
 class City {
   public name: string;
