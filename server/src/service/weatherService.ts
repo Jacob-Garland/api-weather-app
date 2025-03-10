@@ -12,18 +12,18 @@ class Weather {
   public city: string;
   public country: string;
   public date: string;
-  public temperature: number;
-  public humidity: number;
-  public windSpeed: number;
+  public temperature: string;
+  public humidity: string;
+  public windSpeed: string;
   public icon: string;
 
   constructor() {
     this.city = '';
     this.country = '';
     this.date = '';
-    this.temperature = 0;
-    this.humidity = 0;
-    this.windSpeed = 0;
+    this.temperature = '';
+    this.humidity = '';
+    this.windSpeed = '';
     this.icon = '';
   }
 } // Double check this
@@ -82,11 +82,11 @@ class WeatherService {
     const currentWeather = new Weather();
     currentWeather.city = response.city_name;
     currentWeather.country = response.country_code;
-    currentWeather.date = response.ob_time;
-    currentWeather.temperature = response.temp;
-    currentWeather.humidity = response.rh;
-    currentWeather.windSpeed = response.wind_spd;
-    currentWeather.icon = response.weather.icon;
+    currentWeather.date = response.current.dt;
+    currentWeather.temperature = response.current.temp;
+    currentWeather.humidity = response.current.humidity;
+    currentWeather.windSpeed = response.current.wind_speed;
+    currentWeather.icon = response.current.weather.icon;
     return currentWeather;
   }
   // TODO: Complete buildForecastArray method
