@@ -21,10 +21,10 @@ class HistoryService {
     this.filePath = path.join(__dirname, 'db/searchHistory.json');
   }
   // TODO: Define a read method that reads from the searchHistory.json file
-  private async read() {
+  private async read(): Promise<City[]> {
     try {
       const data = await fs.readFile(this.filePath, 'utf-8');
-      return JSON.parse(data);
+      return JSON.parse(data) || [];
     } catch (error) {
       console.error("Error reading history", error);
       return [];
@@ -43,7 +43,13 @@ class HistoryService {
   }
   // TODO Define an addCity method that adds a city to the searchHistory.json file
   async addCity(city: City): Promise<void> {
-    const cities = await this.read();
+    let cities = await this.read();
+
+    // Make sure cities is always an array, stop returning null
+    if (!Array.isArray(cities)) {
+      cities = [];
+    }
+
     if (!cities.some((c: City) => c.id === city.id)) {
       cities.push(city);
       await this.write(cities);
