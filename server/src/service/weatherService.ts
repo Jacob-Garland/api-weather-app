@@ -47,7 +47,8 @@ class WeatherService {
   private async fetchLocationData(query: string): Promise<any> {
     try {
       const response = await fetch(query);
-      return response.json();
+      const locationData = await response.json();
+      return locationData;
     } catch (error) {
       console.error('Error fetching location data:', error);
       throw error;
@@ -56,11 +57,11 @@ class WeatherService {
   // TODO: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates[]): Coordinates {
     const { lat, lon } = locationData[0];
-    return { lat, lon } as Coordinates;
+    return { lat, lon };
   }
   // Create buildGeocodeQuery method
   private buildGeocodeQuery(): string {
-    return `${this.baseURL}geo/1.0/direct?q=${this.cityName}&limit=1&appid=${this.apiKey}`;
+    return `http://api.openweathermap.org/geo/1.0/direct?q=${this.cityName}&limit=1&appid=${this.apiKey}`;
   }
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
