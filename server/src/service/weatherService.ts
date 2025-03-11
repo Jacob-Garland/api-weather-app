@@ -47,8 +47,8 @@ class WeatherService {
   private async fetchLocationData(query: string): Promise<Coordinates[]> {
     try {
       const response = await fetch(query);
-      const data = await response.json();
-      return data as Coordinates[];
+      const locationData = await response.json();
+      return locationData as Coordinates[];
     } catch (error) {
       console.error('Error fetching location data:', error);
       throw error;
@@ -56,6 +56,7 @@ class WeatherService {
 }
   // TODO: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates[]): Coordinates {
+    console.log('Location Data:', locationData);
     if (!locationData || locationData.length === 0) {
       throw new Error('Invalid location data');
     } return {
@@ -128,10 +129,11 @@ class WeatherService {
       const coordinates = await this.fetchAndDestructureLocationData(city);
       const weatherData = await this.fetchWeatherData(coordinates);
       const currentWeather = this.parseCurrentWeather(weatherData);
-      return this.buildForecastArray(currentWeather, weatherData);
+      const forecastArray = this.buildForecastArray(currentWeather, weatherData);
+      return forecastArray;
     } catch (error) {
       console.error('Error getting weather for city:', error);
-      return null;
+      throw error;
     }
   }
 }
