@@ -39,7 +39,7 @@ class Weather {
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
-  baseURL: string = process.env.API_BASE_URL || ''; 
+  private baseURL: string = process.env.API_BASE_URL || ''; 
   private apiKey: string = process.env.API_KEY || '';
   private cityName: string = '';
 
@@ -60,8 +60,8 @@ class WeatherService {
     return { lat, lon };
   }
   // Create buildGeocodeQuery method
-  private buildGeocodeQuery(): string {
-    return `http://api.openweathermap.org/geo/1.0/direct?q=${this.cityName}&limit=1&appid=${this.apiKey}`;
+  private buildGeocodeQuery(city: string): string {
+    return `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${this.apiKey}`;
   }
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
@@ -71,8 +71,7 @@ class WeatherService {
   private async fetchAndDestructureLocationData(city: string): Promise<Coordinates> {
     try {
       this.cityName = city;
-      const query = this.buildGeocodeQuery();
-      const locationData = await this.fetchLocationData(query);
+      const locationData = await this.fetchLocationData(this.buildGeocodeQuery(city));
       return this.destructureLocationData(locationData);
     } catch (error) {
       console.error('Error fetching and deconstructing location data:', error);
