@@ -91,6 +91,15 @@ class WeatherService {
   }
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
+    if (
+      !response || 
+      !response.current || 
+      !response.current.weather || 
+      response.current.weather.length === 0
+    ) {
+      throw new Error('Invalid weather response: Missing required data');
+    } // For debugging purposes
+    
     const currentWeather = new Weather(
       this.cityName,
       new Date().toISOString(),
@@ -103,7 +112,7 @@ class WeatherService {
     return currentWeather;
   }
   // TODO: Complete buildForecastArray method
-  private buildForecastArray(currentWeather: Weather, weatherData: any): any {
+  private buildForecastArray(currentWeather: Weather, weatherData: any[]): any {
     const forecastArray = weatherData.daily.map((day: any) => {
       return new Weather(
         this.cityName,
