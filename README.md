@@ -3,8 +3,8 @@
 ## Description
 
 This a weather API app that had starter code provided by edX for the UCF Coding Bootcamp week 9 homework. The goal of this project was to learn
-about web API's and how to integrate them into the backend servers for websites. The app in this repo uses OpenWeather's Weather API with a React
-frontend and an Express.JS backend.
+about web API's and how to integrate them into the backend servers for websites. The app in this repo uses OpenWeather's Weather API with a complied static
+page frontend as a Node.JS client and an Express.JS backend for a server.
 
 ## Screenshot
 
