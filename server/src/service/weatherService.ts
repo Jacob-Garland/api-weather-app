@@ -80,11 +80,11 @@ class WeatherService {
     }
   }
   // TODO: Create fetchWeatherData method
-  private async fetchWeatherData(coordinates: Coordinates): Promise<{ daily: any[]; current: any }> {
+  private async fetchWeatherData(coordinates: Coordinates): Promise<{ list: any[] }> {
     try {
       const query = this.buildWeatherQuery(coordinates);
       const response = await fetch(`${this.baseURL}${query}`);
-      const weatherData = await response.json() as { daily: any[]; current: any };
+      const weatherData = await response.json() as { list: any[] };
       return weatherData;
     } catch (error) {
       console.error('Error fetching weather data:', error);
@@ -99,35 +99,57 @@ class WeatherService {
       !response.current.weather || 
       response.current.weather.length === 0
     ) {
-      console.log('Weather API Response:', JSON.stringify(response, null, 2));
+      // console.log('Weather API Response:', JSON.stringify(response, null, 2));
       throw new Error('Invalid weather response: Missing required data');
-    } // For debugging purposes
+    } // For debugging purposes, log the response
+
+    const currentData = response.list[0];
+    const weatherDetails = currentData.weather?.[0] || {};
 
     const currentWeather = new Weather(
       this.cityName,
-      new Date().toISOString(),
-      response.current.weather[0].icon,
-      response.current.weather[0].description,
-      response.current.temp.toString(),
-      response.current.wind_speed.toString(),
-      response.current.humidity.toString()
+      currentData.dt_txt,
+      weatherDetails.icon,
+      weatherDetails.description,
+      currentData.main.temp.toString(),
+      currentData.wind.speed.toString(),
+      currentData.main.humidity.toString()
     );
+
     return currentWeather;
   }
   // TODO: Complete buildForecastArray method
-  private buildForecastArray(currentWeather: Weather, weatherData: { daily: any[] }) {
-    const forecastArray = weatherData.daily.map((day: any) => {
-      return new Weather(
-        this.cityName,
-        new Date(day.dt * 1000).toISOString(),
-        day.weather[0].icon,
-        day.weather[0].description,
-        day.temp.day.toString(),
-        day.wind_speed.toString(),
-        day.humidity.toString()
-      );
-    });
-    return [currentWeather, ...forecastArray];
+  private buildForecastArray(currentWeather: Weather, weatherData: { list: any[]; }) {
+    if (!weatherData || !weatherData.list || weatherData.list.length === 0) {
+      throw new Error('Invalid weather data: Missing required data');
+    }
+
+    const dailyForecast: Weather[] = [];
+    const seenDates = new Set(); // Track unique days to avoid duplicates
+
+    for (const entry of weatherData.list) {
+        const date = new Date(entry.dt * 1000).toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        if (!seenDates.has(date) && entry.weather) {
+            seenDates.add(date);
+            const weatherDetails = entry.weather[0] || {}; // Avoids undefined errors
+
+            dailyForecast.push(
+                new Weather(
+                    this.cityName,
+                    new Date(entry.dt * 1000).toISOString(),
+                    weatherDetails.icon || 'N/A',
+                    weatherDetails.description || 'No description available',
+                    entry.main?.temp?.toString() || 'N/A', // Temperature
+                    entry.wind?.speed?.toString() || 'N/A', // Wind Speed
+                    entry.main?.humidity?.toString() || 'N/A' // Humidity
+                )
+            );
+
+            if (dailyForecast.length === 5) break; // Limit to 5-day forecast
+        }
+    }
+
+    return [currentWeather, ...dailyForecast];
   }
   // TODO: Complete getWeatherForCity method
   async getWeatherForCity(city: string) {
@@ -135,7 +157,7 @@ class WeatherService {
       const coordinates = await this.fetchAndDestructureLocationData(city);
       const weatherData = await this.fetchWeatherData(coordinates);
       const currentWeather = this.parseCurrentWeather(weatherData);
-      const forecastArray = this.buildForecastArray(currentWeather, { daily: weatherData.daily });
+      const forecastArray = this.buildForecastArray(currentWeather, weatherData);
       return forecastArray;
     } catch (error) {
       console.error('Error getting weather for city:', error);
