@@ -79,11 +79,12 @@ class WeatherService {
     }
   }
   // TODO: Create fetchWeatherData method
-  private async fetchWeatherData(coordinates: Coordinates): Promise<any> {
+  private async fetchWeatherData(coordinates: Coordinates): Promise<{ daily: any[]; current: any }> {
     try {
       const query = this.buildWeatherQuery(coordinates);
       const response = await fetch(`${this.baseURL}${query}`);
-      return response.json();
+      const weatherData = await response.json() as { daily: any[]; current: any };
+      return weatherData;
     } catch (error) {
       console.error('Error fetching weather data:', error);
       throw error
@@ -97,9 +98,10 @@ class WeatherService {
       !response.current.weather || 
       response.current.weather.length === 0
     ) {
+      console.log('Weather API Response:', JSON.stringify(response, null, 2));
       throw new Error('Invalid weather response: Missing required data');
     } // For debugging purposes
-    
+
     const currentWeather = new Weather(
       this.cityName,
       new Date().toISOString(),
@@ -112,7 +114,7 @@ class WeatherService {
     return currentWeather;
   }
   // TODO: Complete buildForecastArray method
-  private buildForecastArray(currentWeather: Weather, weatherData: any[]): any {
+  private buildForecastArray(currentWeather: Weather, weatherData: { daily: any[] }) {
     const forecastArray = weatherData.daily.map((day: any) => {
       return new Weather(
         this.cityName,
@@ -132,7 +134,7 @@ class WeatherService {
       const coordinates = await this.fetchAndDestructureLocationData(city);
       const weatherData = await this.fetchWeatherData(coordinates);
       const currentWeather = this.parseCurrentWeather(weatherData);
-      const forecastArray = this.buildForecastArray(currentWeather, weatherData);
+      const forecastArray = this.buildForecastArray(currentWeather, { daily: weatherData.daily });
       return forecastArray;
     } catch (error) {
       console.error('Error getting weather for city:', error);
