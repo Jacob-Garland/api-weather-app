@@ -7,7 +7,6 @@ class City {
   id: string;
   weather: [{
     name: string,
-    temperature: string,
     date: string,
     icon: string,
     iconDescription: string,
