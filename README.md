@@ -8,7 +8,7 @@ frontend and an Express.JS backend.
 
 ## Screenshot
 
-![Screenshot](./client/public/vite.svg)
+![Screenshot](./client/public/Screenshot%202025-03-11%20223634.png)
 
 ## Installation
 
