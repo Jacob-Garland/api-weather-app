@@ -4,8 +4,8 @@ dotenv.config();
 
 // TODO: Define an interface for the Coordinates object
 interface Coordinates {
-  lat: number;
-  lon: number;
+  lat: string;
+  lon: string;
 }
 
 // TODO: Define a class for the Weather object
@@ -39,7 +39,7 @@ class Weather {
 // TODO: Complete the WeatherService class
 class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
-  private baseURL: string = process.env.API_BASE_URL || ''; 
+  baseURL: string = process.env.API_BASE_URL || ''; 
   private apiKey: string = process.env.API_KEY || '';
   private cityName: string = '';
 
@@ -65,7 +65,8 @@ class WeatherService {
   }
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
-    return `onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=minutely,hourly,alerts&units=imperial&appid=${this.apiKey}`;
+    const { lat, lon } = coordinates;
+    return `data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.apiKey}`;
   }
   // TODO: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData(city: string): Promise<Coordinates> {

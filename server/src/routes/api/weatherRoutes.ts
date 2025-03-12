@@ -18,7 +18,7 @@ router.post('/', async (req: Request, res: Response) => {
     return res.status(404).json({ message: 'Weather data not found' });
   } else {
     // TODO: save city to search history
-    HistoryService.addCity(cityName);
+    HistoryService.addCity(cityName, weatherArray);
     return res.status(200).json(weatherArray);
   }
   } catch (error) {
