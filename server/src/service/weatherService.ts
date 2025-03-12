@@ -95,16 +95,6 @@ class WeatherService {
   }
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
-    if (
-      !response || 
-      !response.current || 
-      !response.current.weather || 
-      response.current.weather.length === 0
-    ) {
-      // console.log('Weather API Response:', JSON.stringify(response, null, 2));
-      throw new Error('Invalid weather response: Missing required data');
-    } // For debugging purposes, log the response
-
     const currentData = response.list[0];
     const weatherDetails = currentData.weather[0];
 
