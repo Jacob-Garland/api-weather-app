@@ -14,13 +14,11 @@ router.post('/', async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'City name is required' });
     }
     const weatherArray = await WeatherService.getWeatherForCity(cityName);
-  if (!weatherArray) {
-    return res.status(404).json({ message: 'Weather data not found' });
-  } else {
     // TODO: save city to search history
-    HistoryService.addCity(cityName, weatherArray);
-    return res.status(200).json(weatherArray);
-  }
+    const savedCity = await HistoryService.addCity(cityName, weatherArray);
+    console.log('City Saved:', savedCity);
+
+    return res.status(200).json(savedCity.weather);
   } catch (error) {
     console.error('Error getting weather for city:', error);
     return res.status(500).json({ message: 'Error getting weather for city' });
@@ -41,7 +39,7 @@ router.get('/history', async (_req: Request, res: Response) => {
 // * BONUS TODO: DELETE city from search history
 router.delete('/history/:id', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     await HistoryService.removeCity(id);
     res.status(200).json({ message: 'City deleted' });
   }
