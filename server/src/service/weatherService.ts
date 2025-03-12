@@ -157,8 +157,8 @@ class WeatherService {
       const coordinates = await this.fetchAndDestructureLocationData(city);
       const weatherData = await this.fetchWeatherData(coordinates);
       const currentWeather = this.parseCurrentWeather(weatherData);
-      const forecastArray = this.buildForecastArray(currentWeather, weatherData);
-      return forecastArray;
+      const weatherArray = this.buildForecastArray(currentWeather, weatherData);
+      return weatherArray;
     } catch (error) {
       console.error('Error getting weather for city:', error);
       throw error;
